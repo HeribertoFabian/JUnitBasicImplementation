@@ -2,11 +2,14 @@ package org.guzman.junit5app.samples.models;
 
 import org.guzman.junit5app.samples.exceptions.DineroInsuficienteException;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.*;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CuentaTest {
     Cuenta cuenta;
 
@@ -146,4 +149,52 @@ class CuentaTest {
     void ErrorForzado() {
         fail();
     }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void tesSoloWindows() {
+    }
+
+    @Test
+    @EnabledOnOs({OS.LINUX, OS.MAC})
+    void tesSoloLinuxMac() {
+
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void testDiabledWindows() {
+    }
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_8)
+    void soloJDK8() {
+    }
+
+    @Test
+    @EnabledOnJre(JRE.JAVA_11)
+    void testSoloJRE11(){
+
+    }
+
+    @Test
+    @DisabledOnJre(JRE.JAVA_11)
+    void testNoJDK11() {
+    }
+
+    @Test
+    void imprimirSystemProperties() {
+        Properties properties = System.getProperties();
+
+        properties.forEach((k,v)-> System.out.println(k + " : " + v));
+
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "java.version", matches = "11.0.11")
+    @DisplayName("Java Version con System properties")
+    void testJavaVersion() {
+    }
+
+
 }
