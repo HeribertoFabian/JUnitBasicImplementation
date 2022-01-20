@@ -16,7 +16,10 @@ class CuentaTest {
         cuenta.setPersona("Andres");
         String esperado = "Andres";
         String real = cuenta.getPersona();
-        assertEquals(esperado, real);
+
+        assertNotNull(real, () -> "la cuenta no puede ser nula");
+        assertTrue(real.equals("Andres"), () -> "Esperado debe ser igual al real");
+        assertEquals(esperado, real, () -> "Valor inesperado, se esperaba: " + esperado + " pero se obtuvo: " + real);
     }
 
     @Test
@@ -91,30 +94,24 @@ class CuentaTest {
         banco.setNombre("Banco del Estado");
         banco.transferir(cuenta2, cuenta1, new BigDecimal("500"));
 
-        assertAll(
-                () -> {
-                    assertEquals("30001", cuenta1.getSaldo().toPlainString());
-                },
-                () -> {
-                    assertEquals("300", cuenta2.getSaldo().toPlainString());
-                },
-                () -> {
-                    assertEquals(2, banco.getCuentas().size());
-                },
-                () -> {
-                    assertEquals("Banco del Estado1", cuenta1.getBanco().getNombre());
-                },
-                () -> {
-                    assertEquals("Andres", banco.getCuentas().stream()
-                            .filter(c -> c.getPersona().equals("Andres"))
-                            .findFirst()
-                            .get()
-                            .getPersona());
-                },
-                () -> {
-                    assertTrue(banco.getCuentas().stream()
-                            .anyMatch(c -> c.getPersona().equals("Jhone Doe")));
-                }
-        );
+        assertAll(() -> {
+            assertEquals("3000", cuenta1.getSaldo().toPlainString(),
+                    () -> "El valor del saldo de la cuenta 1 no es el esperado");
+        }, () -> {
+            assertEquals("300", cuenta2.getSaldo().toPlainString(),
+                    () -> "El valor del saldo de la cuenta 2 no es el esperado");
+        }, () -> {
+            assertEquals(2, banco.getCuentas().size(),
+                    () -> "El tamaño de la lista de cuentas es incorrecto se esperaba 2 y se obtuvo " + banco.getCuentas().size());
+        }, () -> {
+            assertEquals("Banco del Estado", cuenta1.getBanco().getNombre(),
+                    () -> "El nombre del banco del estado es incorrecto " + banco.getNombre());
+        }, () -> {
+            assertEquals("Andres", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Andres")).findFirst().get().getPersona(),
+                    () -> "No se encontró ningun elemento con el nombre Andres");
+        }, () -> {
+            assertTrue(banco.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Jhone Doe")),
+                    () -> "No se encontró ningun elemento con el nombre Jhone Doe");
+        });
     }
 }
