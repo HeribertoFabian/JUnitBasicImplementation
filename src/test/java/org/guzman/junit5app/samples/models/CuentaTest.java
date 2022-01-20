@@ -160,80 +160,100 @@ class CuentaTest {
         fail();
     }
 
-    @Test
-    @EnabledOnOs(OS.WINDOWS)
-    void tesSoloWindows() {
+    @Nested
+    @DisplayName("Validaciones del SO")
+    class SistemaOperativoTest{
+        @Test
+        @EnabledOnOs(OS.WINDOWS)
+        void tesSoloWindows() {
+        }
+
+        @Test
+        @EnabledOnOs({OS.LINUX, OS.MAC})
+        void tesSoloLinuxMac() {
+
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void testDiabledWindows() {
+        }
     }
 
-    @Test
-    @EnabledOnOs({OS.LINUX, OS.MAC})
-    void tesSoloLinuxMac() {
+    @Nested
+    @DisplayName("Validando requerimientos Java")
+    class JavaVersionTest{
+        @Test
+        @EnabledOnJre(JRE.JAVA_8)
+        void soloJDK8() {
+        }
 
+        @Test
+        @EnabledOnJre(JRE.JAVA_11)
+        void testSoloJRE11() {
+
+        }
+
+        @Test
+        @DisabledOnJre(JRE.JAVA_11)
+        void testNoJDK11() {
+        }
     }
 
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void testDiabledWindows() {
+    @Nested
+    @DisplayName("Probando propiedades del sistema")
+    class SystemPropertiesTest{
+        @Test
+        void imprimirSystemProperties() {
+            Properties properties = System.getProperties();
+
+            properties.forEach((k, v) -> System.out.println(k + " : " + v));
+
+        }
+
+        @Test
+        @EnabledIfSystemProperty(named = "java.version", matches = "11.0.11")
+        @DisplayName("Java Version con System properties")
+        void testJavaVersion() {
+        }
     }
 
-    @Test
-    @EnabledOnJre(JRE.JAVA_8)
-    void soloJDK8() {
+    @Nested
+    @DisplayName("Probando variables de ambiente")
+    class VariableAmbienteTest{
+        @Test
+        void imprimirVariablesAmbiente() {
+            Map<String, String> getenv = System.getenv();
+            getenv.forEach((k, v) -> System.out.println(k + ":" + v));
+        }
+
+        @Test
+        @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = ".*dk-11.0.12.*")
+        void testJavaHome() {
+
+        }
+
+        @Test
+        @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = "12")
+        void testProcesadores() {
+        }
+
+        @Test
+        @EnabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "DEV")
+        void testEnv_dev() {
+
+        }
+
+        @Test
+        @DisabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "PROD")
+        void testENV_prod() {
+
+        }
     }
 
-    @Test
-    @EnabledOnJre(JRE.JAVA_11)
-    void testSoloJRE11() {
 
-    }
 
-    @Test
-    @DisabledOnJre(JRE.JAVA_11)
-    void testNoJDK11() {
-    }
 
-    @Test
-    void imprimirSystemProperties() {
-        Properties properties = System.getProperties();
-
-        properties.forEach((k, v) -> System.out.println(k + " : " + v));
-
-    }
-
-    @Test
-    @EnabledIfSystemProperty(named = "java.version", matches = "11.0.11")
-    @DisplayName("Java Version con System properties")
-    void testJavaVersion() {
-    }
-
-    @Test
-    void imprimirVariablesAmbiente() {
-        Map<String, String> getenv = System.getenv();
-        getenv.forEach((k, v) -> System.out.println(k + ":" + v));
-    }
-
-    @Test
-    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = ".*dk-11.0.12.*")
-    void testJavaHome() {
-
-    }
-
-    @Test
-    @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = "12")
-    void testProcesadores() {
-    }
-
-    @Test
-    @EnabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "DEV")
-    void testEnv_dev() {
-
-    }
-
-    @Test
-    @DisabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "PROD")
-    void testENV_prod() {
-
-    }
 
 
 }
