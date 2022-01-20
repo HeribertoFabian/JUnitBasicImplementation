@@ -5,9 +5,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CuentaTest {
@@ -25,7 +27,7 @@ class CuentaTest {
     }
 
     @BeforeEach
-    void initMethodoTest(){
+    void initMethodoTest() {
         this.cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
 
     }
@@ -49,10 +51,24 @@ class CuentaTest {
 
     @Test
     @DisplayName("Probando el saldo de la cuenta")
-    void testSaldoCuenta() {
+    void testSaldoCuentaDev() {
+        boolean isDev = "dev".equals(System.getProperty("ENV"));
+        assumeTrue(isDev);
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
         assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
         assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+    }
+
+    @Test
+    @DisplayName("Probando el saldo de la cuenta2")
+    void testSaldoCuentaDev2() {
+        boolean isDev = "dev".equals(System.getProperty("ENV"));
+        assumingThat(isDev, ()->{
+            assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
+            assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
+            assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+        });
+
     }
 
     @Test
@@ -123,23 +139,17 @@ class CuentaTest {
         banco.transferir(cuenta2, cuenta1, new BigDecimal("500"));
 
         assertAll(() -> {
-            assertEquals("3000", cuenta1.getSaldo().toPlainString(),
-                    () -> "El valor del saldo de la cuenta 1 no es el esperado");
+            assertEquals("3000", cuenta1.getSaldo().toPlainString(), () -> "El valor del saldo de la cuenta 1 no es el esperado");
         }, () -> {
-            assertEquals("300", cuenta2.getSaldo().toPlainString(),
-                    () -> "El valor del saldo de la cuenta 2 no es el esperado");
+            assertEquals("300", cuenta2.getSaldo().toPlainString(), () -> "El valor del saldo de la cuenta 2 no es el esperado");
         }, () -> {
-            assertEquals(2, banco.getCuentas().size(),
-                    () -> "El tamaño de la lista de cuentas es incorrecto se esperaba 2 y se obtuvo " + banco.getCuentas().size());
+            assertEquals(2, banco.getCuentas().size(), () -> "El tamaño de la lista de cuentas es incorrecto se esperaba 2 y se obtuvo " + banco.getCuentas().size());
         }, () -> {
-            assertEquals("Banco del Estado", cuenta1.getBanco().getNombre(),
-                    () -> "El nombre del banco del estado es incorrecto " + banco.getNombre());
+            assertEquals("Banco del Estado", cuenta1.getBanco().getNombre(), () -> "El nombre del banco del estado es incorrecto " + banco.getNombre());
         }, () -> {
-            assertEquals("Andres", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Andres")).findFirst().get().getPersona(),
-                    () -> "No se encontró ningun elemento con el nombre Andres");
+            assertEquals("Andres", banco.getCuentas().stream().filter(c -> c.getPersona().equals("Andres")).findFirst().get().getPersona(), () -> "No se encontró ningun elemento con el nombre Andres");
         }, () -> {
-            assertTrue(banco.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Jhone Doe")),
-                    () -> "No se encontró ningun elemento con el nombre Jhone Doe");
+            assertTrue(banco.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Jhone Doe")), () -> "No se encontró ningun elemento con el nombre Jhone Doe");
         });
     }
 
@@ -173,7 +183,7 @@ class CuentaTest {
 
     @Test
     @EnabledOnJre(JRE.JAVA_11)
-    void testSoloJRE11(){
+    void testSoloJRE11() {
 
     }
 
@@ -186,7 +196,7 @@ class CuentaTest {
     void imprimirSystemProperties() {
         Properties properties = System.getProperties();
 
-        properties.forEach((k,v)-> System.out.println(k + " : " + v));
+        properties.forEach((k, v) -> System.out.println(k + " : " + v));
 
     }
 
@@ -194,6 +204,35 @@ class CuentaTest {
     @EnabledIfSystemProperty(named = "java.version", matches = "11.0.11")
     @DisplayName("Java Version con System properties")
     void testJavaVersion() {
+    }
+
+    @Test
+    void imprimirVariablesAmbiente() {
+        Map<String, String> getenv = System.getenv();
+        getenv.forEach((k, v) -> System.out.println(k + ":" + v));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "JAVA_HOME", matches = ".*dk-11.0.12.*")
+    void testJavaHome() {
+
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = "12")
+    void testProcesadores() {
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "DEV")
+    void testEnv_dev() {
+
+    }
+
+    @Test
+    @DisabledIfEnvironmentVariable(named = "ENVIRONMENT", matches = "PROD")
+    void testENV_prod() {
+
     }
 
 
