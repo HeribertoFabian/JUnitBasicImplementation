@@ -1,6 +1,8 @@
 package org.guzman.junit5app.samples.models;
 
 import org.guzman.junit5app.samples.exceptions.DineroInsuficienteException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -11,6 +13,7 @@ class CuentaTest {
 
 
     @Test
+    @DisplayName("Probando nombre de la cuenta")
     void testNombreCuenta() {
         Cuenta cuenta = new Cuenta();
         cuenta.setPersona("Andres");
@@ -23,6 +26,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Probando el saldo de la cuenta")
     void testSaldoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
@@ -31,6 +35,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Pases por referencia vs valor")
     void testReferenciaCuenta() {
         Cuenta cuenta = new Cuenta("John Doe", new BigDecimal("8900.997"));
         Cuenta cuenta2 = new Cuenta("John Doe", new BigDecimal("8900.997"));
@@ -40,6 +45,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Probando metodos de debito")
     void testDebitoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         cuenta.debito(new BigDecimal(100));
@@ -49,6 +55,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Probando metodo credito")
     void testCreditoCuenta() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         cuenta.credito(new BigDecimal(100));
@@ -58,6 +65,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Manejo de Excepciones")
     void testDineroInsuficienteException() {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
         Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
@@ -71,6 +79,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Transferencias de dinero")
     void testTransferirDineroCuentas() {
         Cuenta cuenta1 = new Cuenta("Jhone Doe", new BigDecimal("2500"));
         Cuenta cuenta2 = new Cuenta("Andres", new BigDecimal("800"));
@@ -83,6 +92,7 @@ class CuentaTest {
     }
 
     @Test
+    @DisplayName("Relacion Banco-cuentas cuenta-Banco")
     void testRelacionBancoCuentas() {
         Cuenta cuenta1 = new Cuenta("Jhone Doe", new BigDecimal("2500"));
         Cuenta cuenta2 = new Cuenta("Andres", new BigDecimal("800"));
@@ -113,5 +123,12 @@ class CuentaTest {
             assertTrue(banco.getCuentas().stream().anyMatch(c -> c.getPersona().equals("Jhone Doe")),
                     () -> "No se encontró ningun elemento con el nombre Jhone Doe");
         });
+    }
+
+
+    @Test
+    @Disabled
+    void ErrorForzado() {
+        fail();
     }
 }
