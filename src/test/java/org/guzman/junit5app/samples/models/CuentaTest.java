@@ -167,6 +167,7 @@ class CuentaTest {
         fail();
     }
 
+    @Tag("requerimientos")
     @Nested
     @DisplayName("Validaciones del SO")
     class SistemaOperativoTest {
@@ -187,6 +188,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("requerimientos")
     @Nested
     @DisplayName("Validando requerimientos Java")
     class JavaVersionTest {
@@ -207,6 +209,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("requerimientos")
     @Nested
     @DisplayName("Probando propiedades del sistema")
     class SystemPropertiesTest {
@@ -225,6 +228,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("requerimientos")
     @Nested
     @DisplayName("Probando variables de ambiente")
     class VariableAmbienteTest {
@@ -271,6 +275,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("params")
     @Nested
     class PruebasParametrizadas {
 
@@ -332,6 +337,7 @@ class CuentaTest {
         @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
         @MethodSource("montoList")
         @DisplayName("Parameterized MethodSource tesDebitoCuenta")
+        @Tag("params")
         void testDebitoCuentaParameterizedCsvFileSourceMethodSource(String monto) {
             cuenta.debito(new BigDecimal(monto));
             assertNotNull(cuenta.getSaldo());
