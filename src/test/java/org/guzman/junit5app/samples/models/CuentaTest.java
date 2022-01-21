@@ -34,8 +34,9 @@ class CuentaTest {
     }
 
     @BeforeEach
-    void initMethodoTest() {
+    void initMethodoTest(TestInfo testInfo, TestReporter testReporter) {
         this.cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
+        System.out.println("Ejecutando: " +testInfo.getTestMethod().get().getName() + " #Objetivo: " + testInfo.getDisplayName() );
 
     }
 
@@ -48,6 +49,7 @@ class CuentaTest {
     @Test
     @DisplayName("Probando nombre de la cuenta")
     void testNombreCuenta() {
+
         String esperado = "Andres";
         String real = cuenta.getPersona();
 
