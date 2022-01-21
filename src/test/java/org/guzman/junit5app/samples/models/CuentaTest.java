@@ -10,10 +10,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -36,7 +38,7 @@ class CuentaTest {
     @BeforeEach
     void initMethodoTest(TestInfo testInfo, TestReporter testReporter) {
         this.cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
-        System.out.println("Ejecutando: " +testInfo.getTestMethod().get().getName() + " #Objetivo: " + testInfo.getDisplayName() );
+        testReporter.publishEntry("Ejecutando: " +testInfo.getTestMethod().get().getName() + " #Objetivo: " + testInfo.getDisplayName() );
 
     }
 
@@ -351,8 +353,28 @@ class CuentaTest {
 
     }
 
+    @Nested
+    @Tag("timeout")
+class ejemploTimeOutTest {
+
+        @Test
+        @Timeout(1)
+        void pruebaTimeOut() throws InterruptedException {
+            TimeUnit.SECONDS.sleep(2);
+        }
 
 
+        @Test
+        @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
+        void pruebaTimeOut2() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(1100);
+        }
 
-
+        @Test
+        void testTimeoutAssertions() {
+            assertTimeout(Duration.ofSeconds(5), ()->{
+                TimeUnit.MILLISECONDS.sleep(5500);
+            }, "falla de Timeout");
+        }
+    }
 }
